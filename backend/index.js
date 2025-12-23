@@ -10,7 +10,9 @@ import loopRouter from "./routes/loop.routes.js"
 import storyRouter from "./routes/story.routes.js"
 import messageRouter from "./routes/message.routes.js"
 import { app, server } from "./socket.js"
+import path from "path"
 dotenv.config()
+const _dirname = path.resolve();
 
 const port=process.env.PORT || 5000
 app.use(cors({
@@ -26,6 +28,17 @@ app.use("/api/post",postRouter)
 app.use("/api/loop",loopRouter)
 app.use("/api/story",storyRouter)
 app.use("/api/message",messageRouter)
+
+app.use(express.static(path.join(_dirname, "/frontend/dist")));
+
+app.use(express.static(path.join(_dirname, "frontend/dist")));
+
+// ✅ CATCH-ALL HANDLER (NO path-to-regexp parsing)
+app.use((req, res) => {
+  res.sendFile(
+    path.resolve(_dirname, "frontend", "dist", "index.html")
+  );
+});
 
 
 server.listen(port , ()=>{
